@@ -146,7 +146,7 @@ def send_signal_manually(dac,ttl,startV,endV,steps,freq,cycle):
         tosend = str(int(dacarray[x]))+ "," + str(ttlarray[x]) + "\n"
         tgS.write(tosend.encode())
     #print(ttlarray);
-    #print(dacarray);
+    print(dacarray);
     # for n in range(steps+1):
     #     time.sleep(0.01)  # give the serial port sometime to receive the data 50ms works well...
     #     bufa = ""
@@ -179,16 +179,16 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
     def runscan_random(self):
         st = int(self.step.toPlainText())
         fr = int(self.freq.toPlainText())
-        cy = int(self.cycle.toPlainText())
+        cy = int(self.cycle.value())
         send_signal_random(st,fr,cy)
     def runscan_manually(self):
-        dn = int(self.DAC1.value())
-        tn = int(self.TTL1.value())
+        dn = 1
+        tn = 1
         sv = int(self.startV.toPlainText())
         en = int(self.endV.toPlainText())
         st = int(self.step1.toPlainText())
         fr = int(self.freq1.toPlainText())
-        cy = int(self.cycle1.toPlainText())
+        cy = int(self.cycle1.value())
         send_signal_manually(dn,tn,sv,en,st,fr,cy)
     # def runscan_setdac(self):
     #     dn = int(self.DAC2.value())#dac number
