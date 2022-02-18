@@ -132,7 +132,7 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.cv.setText(str(0))
-        self.increment.textChanged.connect(self.action)        
+        self.increment.textChanged.connect(self.action)       
         self.final1.valueChanged.connect(self.runscan_setdac)
     def action(self):
         self.final1.setSingleStep(float(self.increment.toPlainText())) 
@@ -145,9 +145,9 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
         steps = int(np.ceil(np.abs(fv - self.current_V)/sl)) + 1
         dn,trig,freq,cycle,ttl=1,0,0,1,1
         dacarray=np.linspace(self.current_V, fv, steps)
-        print(dacarray)
+        #print(dacarray)
         vs=len(dacarray)
-        print(vs)
+        #print(vs)
         ttlarray=np.ones(vs, dtype=int)
         print(writetgs("PROG_WAVE," + str(dn)+ "," + str(ttl)+ ","+ str(vs)+"," +str(trig)+ "," +str(freq)+ "," +str(cycle)+ "\n"))
         tosend = ((dacarray+5)/10)*65535
@@ -156,12 +156,14 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
             print('ERROR: Voltage is outside range')
         print('Sending data...')
         for x in range(vs):
-            time.sleep(0.001)
+            time.sleep(0.0001)
             str_tosend = str(tosend[x]) + "," + str(ttlarray[x]) + "\n"
             tgS.write(str_tosend.encode()) 
         print('Starting signal output...')
+        self.final1.setEnabled(False) 
         tosend = "STARTWAVE\n"
         tgS.write(tosend.encode())
+        self.final1.setEnabled(True) 
     def closeEvent(self, event):
         super(TriggerSignal, self).closeEvent(event)
         tgS.close()

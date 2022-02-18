@@ -95,6 +95,9 @@
        </item>
        <item>
         <widget class="QDoubleSpinBox" name="final1">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="font">
           <font>
            <pointsize>16</pointsize>
