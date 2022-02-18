@@ -167,7 +167,6 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
     def closeEvent(self, event):
         super(TriggerSignal, self).closeEvent(event)
         tgS.close()
-        #self.serial_port.close()
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = TriggerSignal()
