@@ -112,8 +112,8 @@ def readStat():
         print(bufa);
         if(len(bufa) < 5):
             break 
-def send_signal_random(steps,freq,trig,cycle,dac,ttl):
-    writetgs("PROG_WAVE," + str(dac)+ "," + str(ttl)+ ","+ str(steps)+"," +str(trig)+ "," +str(freq)+ "," +str(cycle)+ "\n")
+def send_signal_random(steps,freq,cycle):
+    writetgs("PROG_WAVE," + str(1)+ "," + str(1)+ ","+ str(steps)+"," +str(0)+ "," +str(freq)+ "," +str(cycle)+ "\n")
    # tgS.write("PROG_WAVE," + str(dac)+ ","+ str(steps)+"," +str(trig)+ "\n")  # send command
     time.sleep(0.1) #quick delay needed?
     dacarray = np.random.randint(65535,size=steps)
@@ -124,16 +124,16 @@ def send_signal_random(steps,freq,trig,cycle,dac,ttl):
         tgS.write(tosend.encode())
     print(ttlarray);
     print(dacarray);
-    for n in range(steps+1):
-        time.sleep(0.01)  # give the serial port sometime to receive the data 50ms works well...
-        bufa = ""
-        bufa = tgS.readline().decode()
-        print(bufa);
+    # for n in range(steps+1):
+    #     time.sleep(0.01)  # give the serial port sometime to receive the data 50ms works well...
+    #     bufa = ""
+    #     bufa = tgS.readline().decode()
+    #     print(bufa);
     tosend = "STARTWAVE\n"
     tgS.write(tosend.encode())
     #("STARTWAVE\n")
-    input("Enter to close...")
-    tgS.write("\n".encode())
+    # input("Enter to close...")
+    # tgS.write("\n".encode())
     
 def send_signal_manually(dac,ttl,startV,endV,steps,freq,cycle):
     startV,endV = int((startV+5)/10*65535),int((endV+5)/10*65535)
@@ -174,22 +174,13 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
         QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
-        self.cv.setText(str(0))
-        self.cv.setReadOnly(True)
-        self.step2.textChanged.connect(self.action)
         self.start_button.clicked.connect(self.runscan_random)
-        self.start_button1.clicked.connect(self.runscan_manually)
-        self.final1.valueChanged.connect(self.runscan_setdac)
-    def action(self):
-       self.final1.setSingleStep(float(self.step2.toPlainText()))    
+        self.start_button1.clicked.connect(self.runscan_manually) 
     def runscan_random(self):
-        dn = int(self.DAC.value())
-        tn = int(self.TTL.value())
         st = int(self.step.toPlainText())
-        tr = int(self.trig.value())
         fr = int(self.freq.toPlainText())
         cy = int(self.cycle.toPlainText())
-        send_signal_random(st,fr,tr,cy,dn,tn)
+        send_signal_random(st,fr,cy)
     def runscan_manually(self):
         dn = int(self.DAC1.value())
         tn = int(self.TTL1.value())
@@ -199,31 +190,31 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
         fr = int(self.freq1.toPlainText())
         cy = int(self.cycle1.toPlainText())
         send_signal_manually(dn,tn,sv,en,st,fr,cy)
-    def runscan_setdac(self):
-        dn = int(self.DAC2.value())#dac number
-        fv = float(self.final1.value())#
-        st = float(self.step2.toPlainText())
-        self.current_V = float(self.cv.toPlainText())
-        self.cv.setText(str(round(fv,3)))
-        step_size = int(np.ceil(np.abs(fv - self.current_V)/st))
-        trig,freq,cycle,ttl=0,0,1,1
+    # def runscan_setdac(self):
+    #     dn = int(self.DAC2.value())#dac number
+    #     fv = float(self.final1.value())#
+    #     st = float(self.step2.toPlainText())
+    #     self.current_V = float(self.cv.toPlainText())
+    #     self.cv.setText(str(round(fv,3)))
+    #     step_size = int(np.ceil(np.abs(fv - self.current_V)/st))
+    #     trig,freq,cycle,ttl=0,0,1,1
 
-        dacarray=np.linspace(self.current_V, fv, step_size)
-        print(dacarray)
-        vs=len(dacarray)
-        print(vs)
-        ttlarray=np.ones(vs, dtype=int)
-        print(writetgs("PROG_WAVE," + str(dn)+ "," + str(ttl)+ ","+ str(vs)+"," +str(trig)+ "," +str(freq)+ "," +str(cycle)+ "\n"))
-        tosend = ((dacarray+5)/10)*65535
-        tosend = tosend.astype(int)
-        if min(tosend) < 0 or max(tosend) > 65535:
-            print('ERROR: Voltage is outside range')
-        for x in range(vs):
-            time.sleep(0.001)
-            str_tosend = str(tosend[x]) + "," + str(ttlarray[x]) + "\n"
-            tgS.write(str_tosend.encode())      
-        tosend = "STARTWAVE\n"
-        tgS.write(tosend.encode())
+    #     dacarray=np.linspace(self.current_V, fv, step_size)
+    #     print(dacarray)
+    #     vs=len(dacarray)
+    #     print(vs)
+    #     ttlarray=np.ones(vs, dtype=int)
+    #     print(writetgs("PROG_WAVE," + str(dn)+ "," + str(ttl)+ ","+ str(vs)+"," +str(trig)+ "," +str(freq)+ "," +str(cycle)+ "\n"))
+    #     tosend = ((dacarray+5)/10)*65535
+    #     tosend = tosend.astype(int)
+    #     if min(tosend) < 0 or max(tosend) > 65535:
+    #         print('ERROR: Voltage is outside range')
+    #     for x in range(vs):
+    #         time.sleep(0.001)
+    #         str_tosend = str(tosend[x]) + "," + str(ttlarray[x]) + "\n"
+    #         tgS.write(str_tosend.encode())      
+    #     tosend = "STARTWAVE\n"
+    #     tgS.write(tosend.encode())
 
     # def closeport(self):
     #     self.destroy()

@@ -132,16 +132,13 @@ class TriggerSignal(QtWidgets.QMainWindow, Ui_MainWindow):
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.cv.setText(str(0))
-        self.increment.textChanged.connect(self.action)
-        self.final1.setKeyboardTracking(False)
+        self.increment.textChanged.connect(self.action)        
         self.final1.valueChanged.connect(self.runscan_setdac)
     def action(self):
         self.final1.setSingleStep(float(self.increment.toPlainText())) 
     def runscan_setdac(self):
-        #dn = int(self.DAC2.value())#dac number
         fv = float(self.final1.value())#
         print('Recieved', fv, 'as set value.')
-        #st = float(self.increment.toPlainText())
         sl = float(self.slope.toPlainText())
         self.current_V = float(self.cv.toPlainText())
         self.cv.setText(str(round(fv,3)))

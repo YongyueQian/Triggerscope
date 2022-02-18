@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>547</width>
-    <height>286</height>
+    <width>570</width>
+    <height>354</height>
    </rect>
   </property>
   <property name="font">
@@ -102,6 +102,9 @@
            <bold>true</bold>
           </font>
          </property>
+         <property name="keyboardTracking">
+          <bool>false</bool>
+         </property>
          <property name="decimals">
           <number>3</number>
          </property>
@@ -182,7 +185,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>547</width>
+     <width>570</width>
      <height>21</height>
     </rect>
    </property>
